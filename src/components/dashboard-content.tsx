@@ -63,7 +63,7 @@ export default function DashboardContent({ user }: DashboardContentProps) {
     message: string;
     // Add any other properties your notifications will have
   }
-  const [notifications, setNotifications] = useState([]); // Placeholder for notifications
+  const [notifications, setNotifications] = useState<Notification[]>([]); // Now typed correctly // Placeholder for notifications
   const [showResumeUpload, setShowResumeUpload] = useState(false);
 
   // Resume upload state
