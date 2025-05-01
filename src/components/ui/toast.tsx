@@ -73,12 +73,12 @@ const toastVariants = cva(
 interface ToastProps extends React.HTMLAttributes<HTMLDivElement>,
   VariantProps<typeof toastVariants> {}
 
-function Toast({ 
-  className, 
-  type, 
-  ...props 
-}: ToastProps) {
-  return (
-    <div className={cn(toastVariants({ type }), className)} {...props} />
-  )
-}
+  export function Toast({ 
+    className, 
+    type, 
+    ...props 
+  }: ToastProps) {
+    return (
+      <div className={cn(toastVariants({ type }), className)} {...props} />
+    )
+  }
