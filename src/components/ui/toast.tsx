@@ -82,3 +82,25 @@ interface ToastProps extends React.HTMLAttributes<HTMLDivElement>,
       <div className={cn(toastVariants({ type }), className)} {...props} />
     )
   }
+  export function ToastClose({ className, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+    return (
+      <button
+        className={cn("absolute top-1 right-1 p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700", className)}
+        {...props}
+      >
+        <X size={14} />
+      </button>
+    );
+  }
+  
+  export function ToastDescription({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) {
+    return <p className={cn("text-sm", className)} {...props} />;
+  }
+  
+  export function ToastTitle({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
+    return <h2 className={cn("font-medium", className)} {...props} />;
+  }
+  
+  export function ToastViewport() {
+    return <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2" />;
+  }
