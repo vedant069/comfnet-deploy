@@ -21,7 +21,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from './ui/dialog';
-import { useToast } from './ui/toast';
+import { useToast } from "@/components/hooks/use-toast";
 
 // Status options with colors
 const STATUS_COLORS: Record<string, string> = {

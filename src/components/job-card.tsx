@@ -7,7 +7,7 @@ import { Button } from "./ui/button";
 import { Bookmark, BookmarkCheck, Building, ExternalLink, MapPin, Clock } from "lucide-react";
 import { JobSearchResult } from "@/services/job-search-service";
 import { saveJob, removeSavedJob, isJobSaved } from "@/services/saved-jobs-service";
-import { useToast } from "./ui/toast";
+import { useToast } from "@/components/hooks/use-toast";
 
 interface JobProps {
   job: JobSearchResult;
