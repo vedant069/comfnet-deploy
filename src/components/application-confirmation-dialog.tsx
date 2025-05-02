@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { CheckCircle } from "lucide-react";
 import { JobSearchResult } from "@/services/job-search-service";
 import { trackJobApplication } from "@/services/applied-jobs-service";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "../hooks/use-toast";
 import { markJobAsDismissed } from "@/services/job-application-service";
 
 interface ApplicationConfirmationDialogProps {
@@ -27,16 +27,17 @@ export default function ApplicationConfirmationDialog({
     try {
       setSaving(true);
       await trackJobApplication(job, notes);
-      toast({ 
-        message: "Job application tracked successfully!", 
-        type: "success" 
+      toast({
+        title: "Success",
+        description: "Job application tracked successfully!"
       });
       onClose();
     } catch (error) {
       console.error("Error tracking job application:", error);
-      toast({ 
-        message: "Failed to track job application", 
-        type: "error" 
+      toast({
+        title: "Error",
+        description: "Failed to track job application",
+        variant: "destructive"
       });
     } finally {
       setSaving(false);
