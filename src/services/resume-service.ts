@@ -42,7 +42,7 @@ export async function parseResume(file: File): Promise<ResumeData> {
   try {
     // Call the FastAPI backend to parse the resume
     // The router in main.py includes the /api prefix
-    const response = await fetch('http://localhost:8000/api/resume/parse', {
+    const response = await fetch('https://comfnet-fastapi-production.up.railway.app/api/resume/parse', {
       method: 'POST',
       body: formData,
     });

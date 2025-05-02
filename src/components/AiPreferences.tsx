@@ -82,7 +82,7 @@ export default function AiPreferences() {
 
   const fetchJobTypes = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/chatbot/job-types');
+      const response = await fetch('https://comfnet-fastapi-production.up.railway.app/api/chatbot/job-types');
       const data = await response.json();
       setJobTypes(data.job_types || []);
       
@@ -101,7 +101,7 @@ export default function AiPreferences() {
     setIsLoadingJobType(true);
     
     try {
-      const response = await fetch('http://localhost:8000/api/chatbot/search-and-index-jobs', {
+      const response = await fetch('https://comfnet-fastapi-production.up.railway.app/api/chatbot/search-and-index-jobs', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -161,7 +161,7 @@ export default function AiPreferences() {
     setIsLoading(true);
     
     try {
-      const response = await fetch('http://localhost:8000/api/chatbot/chat', {
+      const response = await fetch('https://comfnet-fastapi-production.up.railway.app/api/chatbot/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -203,7 +203,7 @@ export default function AiPreferences() {
 
   const clearChat = async () => {
     try {
-      await fetch('http://localhost:8000/api/chatbot/reset-chat', {
+      await fetch('https://comfnet-fastapi-production.up.railway.app/api/chatbot/reset-chat', {
         method: 'POST'
       });
       

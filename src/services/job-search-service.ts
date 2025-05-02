@@ -42,7 +42,7 @@ export async function searchJobs(role: string, location: string): Promise<JobSea
     const query = `${role} jobs in ${location}`;
     
     // Call the backend API
-    const response = await fetch(`http://localhost:8000/api/job-search?query=${encodeURIComponent(query)}&page=1&num_pages=1`);
+    const response = await fetch(`https://comfnet-fastapi-production.up.railway.app/api/job-search?query=${encodeURIComponent(query)}&page=1&num_pages=1`);
     
     if (!response.ok) {
       throw new Error(`Error: ${response.status} ${response.statusText}`);

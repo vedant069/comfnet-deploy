@@ -21,7 +21,7 @@ module.exports = {
       return [
         {
           source: '/api/:path*',
-          destination: 'http://localhost:8000/api/:path*'
+          destination: 'https://comfnet-fastapi-production.up.railway.app/api/:path*'
         }
       ]
     }
