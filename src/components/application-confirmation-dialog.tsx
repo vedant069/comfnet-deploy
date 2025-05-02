@@ -6,6 +6,7 @@ import { CheckCircle } from "lucide-react";
 import { JobSearchResult } from "@/services/job-search-service";
 import { trackJobApplication } from "@/services/applied-jobs-service";
 import { useToast } from "@/components/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { markJobAsDismissed } from "@/services/job-application-service";
 
 interface ApplicationConfirmationDialogProps {

@@ -58,12 +58,12 @@ export default function DashboardContent({ user }: DashboardContentProps) {
   const [resumeUploaded, setResumeUploaded] = useState(false);
   const [jobs, setJobs] = useState([]); // Placeholder for jobs fetched via API
   const [savedSearches, setSavedSearches] = useState([]); // Placeholder for saved searches
-  interface Notification {
+    interface Notification {
     id: string | number;
     message: string;
     // Add any other properties your notifications will have
   }
-  const [notifications, setNotifications] = useState([]); // Placeholder for notifications
+  const [notifications, setNotifications] = useState<Notification[]>([]); // Now typed correctly // Placeholder for notifications
   const [showResumeUpload, setShowResumeUpload] = useState(false);
 
   // Resume upload state
