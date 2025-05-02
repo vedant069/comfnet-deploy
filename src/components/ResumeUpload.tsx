@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FileUp, ChevronLeft } from "lucide-react";
@@ -29,6 +29,7 @@ export default function ResumeUpload({
   const [uploading, setUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -264,15 +265,15 @@ export default function ResumeUpload({
             className="hidden"
             accept=".pdf,.doc,.docx"
             onChange={handleFileChange}
+            ref={fileInputRef}
           />
-          <label htmlFor="resumeUpload">
-            <Button
-              type="button"
-              className="bg-blue-600 hover:bg-blue-700 text-white cursor-pointer"
-            >
-              Browse Files
-            </Button>
-          </label>
+          <Button
+            type="button"
+            className="bg-blue-600 hover:bg-blue-700 text-white cursor-pointer"
+            onClick={() => fileInputRef.current?.click()}
+          >
+            Browse Files
+          </Button>
           {file && (
             <p className="text-green-600 dark:text-green-400 mt-2">
               Selected: {file.name}
