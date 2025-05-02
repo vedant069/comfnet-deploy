@@ -45,24 +45,27 @@ export default function JobCard({ job, onViewDetails, onApplyClick }: JobProps) 
         await removeSavedJob(job.job_id);
         setSaved(false);
         console.log("Job removed successfully");
-        toast({ 
-          message: "Job removed from saved jobs", 
-          type: "info" 
+        toast({
+          title: "Job Removed",
+          description: "Job removed from saved jobs",
+          variant: "default"
         });
       } else {
         await saveJob(job);
         setSaved(true);
         console.log("Job saved successfully");
-        toast({ 
-          message: "Job saved successfully", 
-          type: "success" 
+        toast({
+          title: "Success",
+          description: "Job saved successfully",
+          variant: "default"
         });
       }
     } catch (error) {
       console.error("Error toggling job save:", error);
-      toast({ 
-        message: "Error saving job. Please try again.", 
-        type: "error" 
+      toast({
+        title: "Error",
+        description: "Error saving job. Please try again.",
+        variant: "destructive"
       });
     } finally {
       setSaving(false);

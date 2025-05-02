@@ -71,15 +71,17 @@ export default function MyJobs() {
             : job
         )
       );
-      toast({ 
-        message: "Application status updated", 
-        type: "success" 
+      toast({
+        title: "Status Updated",
+        description: "Application status updated",
+        variant: "default"
       });
     } catch (error) {
       console.error('Error updating job status:', error);
-      toast({ 
-        message: "Failed to update status", 
-        type: "error" 
+      toast({
+        title: "Error",
+        description: "Failed to update status",
+        variant: "destructive"
       });
     }
   };
@@ -92,15 +94,17 @@ export default function MyJobs() {
     try {
       await removeAppliedJob(jobId);
       setAppliedJobs(jobs => jobs.filter(job => job.job_id !== jobId));
-      toast({ 
-        message: "Job application removed", 
-        type: "info" 
+      toast({
+        title: "Application Removed",
+        description: "Job application removed",
+        variant: "default"
       });
     } catch (error) {
       console.error('Error removing job application:', error);
-      toast({ 
-        message: "Failed to remove job application", 
-        type: "error" 
+      toast({
+        title: "Error",
+        description: "Failed to remove job application",
+        variant: "destructive"
       });
     }
   };
@@ -133,15 +137,17 @@ export default function MyJobs() {
       
       setIsEditingNotes(false);
       
-      toast({ 
-        message: "Application updated successfully", 
-        type: "success" 
+      toast({
+        title: "Success",
+        description: "Application updated successfully",
+        variant: "default"
       });
     } catch (error) {
       console.error('Error saving notes:', error);
-      toast({ 
-        message: "Failed to update application", 
-        type: "error" 
+      toast({
+        title: "Error",
+        description: "Failed to update application",
+        variant: "destructive"
       });
     }
   };
