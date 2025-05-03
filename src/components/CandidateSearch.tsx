@@ -37,7 +37,7 @@ export default function CandidateSearch() {
     setError(null);
     
     try {
-      const response = await fetch(`http://localhost:8000/api/candidates/search?job_type=${encodeURIComponent(jobType)}&location=${encodeURIComponent(location)}`);
+      const response = await fetch(`https://comfnet-fastapi-production.up.railway.app/api/candidates/search?job_type=${encodeURIComponent(jobType)}&location=${encodeURIComponent(location)}`);
       
       if (!response.ok) {
         throw new Error(`Error: ${response.status} - ${response.statusText}`);
