@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { FileUp, ChevronLeft } from "lucide-react";
+import { FileUp, ChevronLeft, AlertTriangle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { parseResume, ResumeData, updatePreferredLocation } from "@/services/resume-service";
@@ -29,6 +29,7 @@ export default function ResumeUpload({
   const [uploading, setUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [networkError, setNetworkError] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,6 +64,7 @@ export default function ResumeUpload({
 
     setUploading(true);
     setUploadError(null);
+    setNetworkError(false);
 
     try {
       console.log("Starting file upload for:", file.name);
@@ -73,7 +75,17 @@ export default function ResumeUpload({
       setResumeUploaded(true);
     } catch (err: any) {
       console.error("Upload error:", err);
-      setUploadError(err.message || "Upload failed");
+
+      if (
+        err.message === "Failed to fetch" ||
+        err.message?.includes("NetworkError") ||
+        err.message?.includes("CORS")
+      ) {
+        setNetworkError(true);
+        setUploadError("Network error: The resume parsing service is currently unavailable. Please try again later.");
+      } else {
+        setUploadError(err.message || "Upload failed");
+      }
     } finally {
       setUploading(false);
     }
@@ -82,13 +94,12 @@ export default function ResumeUpload({
   const handleContinueToDashboard = async () => {
     if (preferredLocation) {
       try {
-        // Store the preferred location
         await updatePreferredLocation(preferredLocation);
       } catch (error) {
         console.error("Error updating preferred location:", error);
       }
     }
-    
+
     onComplete();
   };
 
@@ -112,7 +123,6 @@ export default function ResumeUpload({
             Parsed Resume Data
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Basic Info */}
             <Card>
               <CardHeader>
                 <CardTitle>Basic Information</CardTitle>
@@ -138,7 +148,6 @@ export default function ResumeUpload({
                 </div>
               </CardContent>
             </Card>
-            {/* Skills */}
             <Card className="md:col-span-2">
               <CardHeader>
                 <CardTitle>Skills</CardTitle>
@@ -172,7 +181,6 @@ export default function ResumeUpload({
                 </div>
               </CardContent>
             </Card>
-            {/* Experience */}
             <Card className="md:col-span-2">
               <CardHeader>
                 <CardTitle>Experience</CardTitle>
@@ -195,7 +203,6 @@ export default function ResumeUpload({
                 </div>
               </CardContent>
             </Card>
-            {/* Education */}
             <Card className="md:col-span-2">
               <CardHeader>
                 <CardTitle>Education</CardTitle>
@@ -217,7 +224,6 @@ export default function ResumeUpload({
                 </div>
               </CardContent>
             </Card>
-            {/* Certifications */}
             <Card>
               <CardHeader>
                 <CardTitle>Certifications</CardTitle>
@@ -280,9 +286,22 @@ export default function ResumeUpload({
             </p>
           )}
           {uploadError && (
-            <p className="text-red-600 dark:text-red-400 mt-2">
-              Error: {uploadError}
-            </p>
+            <div className="text-red-600 dark:text-red-400 mt-2 flex items-center gap-2">
+              {networkError && <AlertTriangle className="h-4 w-4" />}
+              <p>Error: {uploadError}</p>
+            </div>
+          )}
+          {networkError && (
+            <div className="mt-3 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-md text-sm">
+              <p className="font-medium mb-1">Server Connection Issue</p>
+              <p>Our resume parsing service is currently experiencing issues. This could be due to:</p>
+              <ul className="list-disc pl-5 mt-1">
+                <li>Server maintenance</li>
+                <li>Network connectivity problems</li>
+                <li>Cross-origin resource sharing restrictions</li>
+              </ul>
+              <p className="mt-1">The development team has been notified. Please try again later.</p>
+            </div>
           )}
           {!uploadSuccess && (
             <Button 

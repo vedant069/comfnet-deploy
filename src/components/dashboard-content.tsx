@@ -8,7 +8,7 @@ import {
   Sun,
   Moon,
   ChevronLeft,
-  FileUp, // Add FileUp import
+  FileUp,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/dialog";
 import { ToastProvider } from "@/components/ui/toast";
 
-import Sidebar from "@/components/Sidebar"; // Import the new Sidebar component
+import Sidebar from "@/components/Sidebar";
 import JobCard from "@/components/job-card";
 import FilterPanel from "@/components/filter-panel";
 import Profile from "@/components/Profile";
@@ -36,8 +36,9 @@ import MyJobs from "@/components/my-jobs";
 import ApplicationConfirmationDialog from "@/components/application-confirmation-dialog";
 import { hasAppliedToJob } from "@/services/applied-jobs-service";
 import { handleApplyClick, shouldShowConfirmation, markJobAsDismissed } from "@/services/job-application-service";
-import ResumeUpload from "@/components/ResumeUpload"; // Add this import
-import AiPreferences from '@/components/AiPreferences'; // Add this import
+import ResumeUpload from "@/components/ResumeUpload";
+import AiPreferences from '@/components/AiPreferences';
+import CandidateSearch from '@/components/CandidateSearch';
 
 interface DashboardContentProps {
   user: any;
@@ -56,17 +57,11 @@ export default function DashboardContent({ user }: DashboardContentProps) {
   const [selectedJob, setSelectedJob] = useState<JobSearchResult | null>(null);
   const [searchValue, setSearchValue] = useState("");
   const [resumeUploaded, setResumeUploaded] = useState(false);
-  const [jobs, setJobs] = useState([]); // Placeholder for jobs fetched via API
-  const [savedSearches, setSavedSearches] = useState([]); // Placeholder for saved searches
-    interface Notification {
-    id: string | number;
-    message: string;
-    // Add any other properties your notifications will have
-  }
-  const [notifications, setNotifications] = useState<Notification[]>([]); // Now typed correctly // Placeholder for notifications
+  const [jobs, setJobs] = useState([]);
+  const [savedSearches, setSavedSearches] = useState([]);
+  const [notifications, setNotifications] = useState([]);
   const [showResumeUpload, setShowResumeUpload] = useState(false);
 
-  // Resume upload state
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
@@ -78,14 +73,13 @@ export default function DashboardContent({ user }: DashboardContentProps) {
   const [isSearchingJobs, setIsSearchingJobs] = useState<boolean>(false);
   const [selectedJobRole, setSelectedJobRole] = useState<string | null>(null);
 
-  // Add state for My Jobs
   const [showMyJobs, setShowMyJobs] = useState(false);
   const [lastAppliedJob, setLastAppliedJob] = useState<JobSearchResult | null>(null);
   const [showAppliedConfirmation, setShowAppliedConfirmation] = useState(false);
   const [recentlyVisitedJobSites, setRecentlyVisitedJobSites] = useState<Set<string>>(new Set());
 
-  // Add a new state variable for showing AI Preferences
   const [showAiPreferences, setShowAiPreferences] = useState(false);
+  const [showCandidateSearch, setShowCandidateSearch] = useState(false);
 
   const handleResumeUpload = () => {
     setShowProfile(false);
@@ -151,17 +145,14 @@ export default function DashboardContent({ user }: DashboardContentProps) {
     }
   };
 
-  // Add a function to load the user's existing resume data
   const loadUserResumeData = async () => {
     try {
-      // Get the user's resume data
       const data = await getUserResumeData();
       if (data) {
         setResumeData(data);
         setResumeUploaded(true);
         console.log("Loaded existing resume data");
         
-        // Get the user's preferred location
         const location = await getPreferredLocation();
         if (location) {
           setPreferredLocation(location);
@@ -173,16 +164,13 @@ export default function DashboardContent({ user }: DashboardContentProps) {
     }
   };
 
-  // Load the user's resume data when the component mounts
   useEffect(() => {
     loadUserResumeData();
   }, []);
 
-  // Update the handleContinueToDashboard function to save the preferred location
   const handleContinueToDashboard = async () => {
     if (preferredLocation) {
       try {
-        // Store the preferred location
         await updatePreferredLocation(preferredLocation);
       } catch (error) {
         console.error("Error updating preferred location:", error);
@@ -193,11 +181,9 @@ export default function DashboardContent({ user }: DashboardContentProps) {
     setActiveSection("recommended");
   };
 
-  // Modify handleJobRoleClick to ensure location is entered first
   const handleJobRoleClick = async (role: string) => {
     if (!preferredLocation.trim()) {
-      // If no location, we won't show the prompt but just inform user they need to set location
-      return; // Don't proceed without location
+      return;
     }
 
     setSelectedJobRole(role);
@@ -216,16 +202,13 @@ export default function DashboardContent({ user }: DashboardContentProps) {
     }
   };
 
-  // Also update the section where preferred location is changed
   const handleLocationChange = async (newLocation: string) => {
     if (newLocation && newLocation !== preferredLocation) {
       setPreferredLocation(newLocation);
       
       try {
-        // Store the updated location
         await updatePreferredLocation(newLocation);
         
-        // If we're viewing a specific job role, refresh the search
         if (selectedJobRole) {
           handleJobRoleClick(selectedJobRole);
         }
@@ -235,15 +218,12 @@ export default function DashboardContent({ user }: DashboardContentProps) {
     }
   };
 
-  // Check for jobs that the user may have applied to
   useEffect(() => {
     const checkForAppliedJobs = async () => {
-      // Get jobs from session storage
       const storedJobs = sessionStorage.getItem('recentlyViewedJobs');
       if (storedJobs) {
         const jobs = JSON.parse(storedJobs) as JobSearchResult[];
         
-        // Find the first job that hasn't been confirmed yet
         for (const job of jobs) {
           const applied = await hasAppliedToJob(job.job_id);
           if (!applied && !recentlyVisitedJobSites.has(job.job_id)) {
@@ -255,30 +235,23 @@ export default function DashboardContent({ user }: DashboardContentProps) {
       }
     };
     
-    // Only check if we're on the dashboard (not in other sections)
     if (!showProfile && !showResumeUpload && !showMyJobs) {
       checkForAppliedJobs();
     }
   }, [showProfile, showResumeUpload, showMyJobs, recentlyVisitedJobSites]);
 
-  // Fix the useEffect that checks for pending job applications
   useEffect(() => {
-    // Check if there's a stored job in localStorage
     const storedJob = localStorage.getItem('lastAppliedJob');
     if (storedJob) {
       try {
         const job = JSON.parse(storedJob) as JobSearchResult;
         
-        // Only show the confirmation if:
-        // 1. We haven't already confirmed or dismissed this job
-        // 2. The job hasn't already been applied to
         if (shouldShowConfirmation(job.job_id)) {
           hasAppliedToJob(job.job_id).then(applied => {
             if (!applied) {
               setLastAppliedJob(job);
               setShowAppliedConfirmation(true);
             } else {
-              // Already tracked, clear from storage and mark as dismissed
               markJobAsDismissed(job.job_id);
             }
           });
@@ -290,35 +263,28 @@ export default function DashboardContent({ user }: DashboardContentProps) {
     }
   }, []);
 
-  // Update the handleApplyClick function to use the new service
   const handleJobApply = (job: JobSearchResult) => {
-    handleApplyClick(job); // Use the centralized service
+    handleApplyClick(job);
     
-    // Show confirmation dialog immediately
     setLastAppliedJob(job);
     setShowAppliedConfirmation(true);
     
-    // Close the job details modal
     setSelectedJob(null);
   };
 
-  // Fix the confirmation close handler
   const handleConfirmationClose = () => {
     setShowAppliedConfirmation(false);
     
     if (lastAppliedJob) {
-      // Mark this job as dismissed so we don't show the dialog again
       markJobAsDismissed(lastAppliedJob.job_id);
       setLastAppliedJob(null);
     }
   };
 
-  // Updating the main return statement to use our new Sidebar component
   return (
     <ToastProvider>
       <div className={isDarkMode ? "dark" : ""}>
         <div className="flex h-screen bg-gradient-to-r from-gray-50 to-gray-100 dark:bg-gray-900 dark:from-gray-800 dark:to-gray-700 transition-colors duration-300">
-          {/* Use the new Sidebar component */}
           <Sidebar 
             user={user}
             isSidebarCollapsed={isSidebarCollapsed}
@@ -328,13 +294,12 @@ export default function DashboardContent({ user }: DashboardContentProps) {
             setShowProfile={setShowProfile}
             setShowResumeUpload={setShowResumeUpload}
             setShowMyJobs={setShowMyJobs}
-            setShowAiPreferences={setShowAiPreferences} // Add this prop
+            setShowAiPreferences={setShowAiPreferences}
+            setShowCandidateSearch={setShowCandidateSearch}
             handleResumeUpload={handleResumeUpload}
           />
           
-          {/* Main Content */}
           <main className="flex-1 overflow-auto dark:bg-gray-900 transition-colors duration-300">
-            {/* Header */}
             <header className="sticky top-0 z-20 bg-white dark:bg-gray-800 border-b p-4 shadow-md transition-colors duration-300">
               <div className="flex justify-between items-center">
                 <div className="relative w-1/3">
@@ -363,16 +328,33 @@ export default function DashboardContent({ user }: DashboardContentProps) {
               </div>
             </header>
             
-            {/* Filter Panel */}
             {showFilters && (
               <div className="p-4">
                 <FilterPanel />
               </div>
             )}
             
-            {/* Dashboard Content */}
             <section className="p-6">
-              {showAiPreferences ? (
+              {showCandidateSearch ? (
+                <div>
+                  <div className="flex items-center mb-6">
+                    <Button
+                      variant="ghost"
+                      onClick={() => {
+                        setShowCandidateSearch(false);
+                        setActiveSection("recommended");
+                      }}
+                      className="mr-2"
+                    >
+                      <ChevronLeft className="h-4 w-4 mr-1" /> Back
+                    </Button>
+                    <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200">
+                      Candidate Search
+                    </h2>
+                  </div>
+                  <CandidateSearch />
+                </div>
+              ) : showAiPreferences ? (
                 <div>
                   <div className="flex items-center mb-6">
                     <Button
@@ -408,7 +390,6 @@ export default function DashboardContent({ user }: DashboardContentProps) {
                       User Profile
                     </h2>
                   </div>
-                  {/* Profile Panel */}
                   <Profile user={user} />
                 </div>
               ) : showResumeUpload ? (
@@ -530,7 +511,6 @@ export default function DashboardContent({ user }: DashboardContentProps) {
                             <div>
                               <h3 className="text-xl font-medium mb-4">Select a Job Role to Search:</h3>
                               
-                              {/* Add the missing location input box */}
                               <div className="mb-6">
                                 <Card className="border mb-6">
                                   <CardHeader>
@@ -552,7 +532,6 @@ export default function DashboardContent({ user }: DashboardContentProps) {
                                         <Button 
                                           onClick={() => {
                                             if (preferredLocation.trim()) {
-                                              // Just to trigger a re-render and confirm location
                                               setPreferredLocation(preferredLocation.trim());
                                               updatePreferredLocation(preferredLocation.trim())
                                                 .catch(e => console.error("Error saving location:", e));
@@ -662,7 +641,6 @@ export default function DashboardContent({ user }: DashboardContentProps) {
           </main>
         </div>
 
-        {/* Job Description Modal */}
         {selectedJob && (
           <Dialog open={!!selectedJob} onOpenChange={() => setSelectedJob(null)}>
             <DialogContent className="max-w-3xl">
@@ -739,7 +717,6 @@ export default function DashboardContent({ user }: DashboardContentProps) {
           </Dialog>
         )}
 
-        {/* Application Confirmation Dialog */}
         {lastAppliedJob && (
           <ApplicationConfirmationDialog
             isOpen={showAppliedConfirmation}

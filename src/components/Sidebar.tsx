@@ -11,6 +11,7 @@ import {
   Home,
   LogOut,
   Settings,
+  Users, // Add this import for the candidate search icon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -26,7 +27,8 @@ interface SidebarProps {
   setShowProfile: (show: boolean) => void;
   setShowResumeUpload: (show: boolean) => void;
   setShowMyJobs: (show: boolean) => void;
-  setShowAiPreferences: (show: boolean) => void; // Add this prop
+  setShowAiPreferences: (show: boolean) => void;
+  setShowCandidateSearch: (show: boolean) => void; // Add this prop
   handleResumeUpload: () => void;
 }
 
@@ -39,7 +41,8 @@ export default function Sidebar({
   setShowProfile,
   setShowResumeUpload,
   setShowMyJobs,
-  setShowAiPreferences, // Add this prop in function parameters
+  setShowAiPreferences,
+  setShowCandidateSearch, // Add this prop
   handleResumeUpload,
 }: SidebarProps) {
   const supabase = createClient();
@@ -135,12 +138,30 @@ export default function Sidebar({
             setShowProfile(false);
             setShowResumeUpload(false);
             setShowMyJobs(false);
-            setShowAiPreferences(true); // Set this to true
+            setShowAiPreferences(true);
             setActiveSection("ai-preferences");
           }}
         >
           <Settings className="mr-2 h-4 w-4" />
           {!isSidebarCollapsed && "AI Assistant"}
+        </Button>
+        {/* Add the Candidate Search button in the sidebar, typically in the main nav section */}
+        <Button
+          variant="ghost"
+          className={`justify-start hover:scale-105 transition-transform ${
+            activeSection === "candidate-search" ? "bg-gray-100 dark:bg-gray-700" : ""
+          }`}
+          onClick={() => {
+            setShowProfile(false);
+            setShowResumeUpload(false);
+            setShowMyJobs(false);
+            setShowAiPreferences(false);
+            setShowCandidateSearch(true);
+            setActiveSection("candidate-search");
+          }}
+        >
+          <Users className="mr-2 h-4 w-4" />
+          {!isSidebarCollapsed && "Candidate Search"}
         </Button>
         {/* Make sure the upload resume button is set up to properly show the upload component: */}
         <Button
@@ -149,7 +170,7 @@ export default function Sidebar({
           onClick={() => {
             setShowProfile(false);
             setShowMyJobs(false);
-            setShowResumeUpload(true); // This will trigger the ResumeUpload component
+            setShowResumeUpload(true);
             setActiveSection("upload-resume");
           }}
         >
