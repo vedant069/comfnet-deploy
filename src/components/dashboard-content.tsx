@@ -40,6 +40,14 @@ import ResumeUpload from "@/components/ResumeUpload";
 import AiPreferences from '@/components/AiPreferences';
 import CandidateSearch from '@/components/CandidateSearch';
 
+// Define interface for notification
+interface Notification {
+  id: string;
+  message: string;
+  timestamp?: string;
+  read?: boolean;
+}
+
 interface DashboardContentProps {
   user: any;
 }
@@ -59,7 +67,7 @@ export default function DashboardContent({ user }: DashboardContentProps) {
   const [resumeUploaded, setResumeUploaded] = useState(false);
   const [jobs, setJobs] = useState([]);
   const [savedSearches, setSavedSearches] = useState([]);
-  const [notifications, setNotifications] = useState([]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showResumeUpload, setShowResumeUpload] = useState(false);
 
   const [file, setFile] = useState<File | null>(null);
